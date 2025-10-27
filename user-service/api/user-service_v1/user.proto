@@ -1,69 +1,123 @@
 syntax = "proto3";
 
-package user_service_v1;
+package user_service.v1;
+
+option go_package = "github.com/mrevds/pizza-app/user-service/api/user-service_v1;user_service_v1";
 
 import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
-option go_package = "github.com/mrevds/pizza-app/user-service/api/user-service_v1;userservicev1";
+// User Service - управление пользователями
+service UserService {
+  // Регистрация нового пользователя
+  rpc Register(RegisterRequest) returns (RegisterResponse);
 
-service UserV1 {
-  rpc Register(RegisterUserRequest) returns (RegisterUserResponse);
-  rpc Login(LoginUserRequest) returns (LoginUserResponse);
+  // Вход пользователя
+  rpc Login(LoginRequest) returns (LoginResponse);
+
+  // Обновление access token через refresh token
+
+  // Выход (отзыв refresh token)
   rpc Logout(LogoutRequest) returns (LogoutResponse);
 
+  // Получение профиля пользователя
   rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
-  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateUserResponse);
+
+  // Обновление профиля пользователя
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse);
+
+
 }
 
-message UserProfile {
-  string user_id = 1;
-  string email = 2;
-  string phone_number = 3;
-  string first_name = 4;
-  string last_name = 5;
+// Модели
+
+message User {
+  int64 id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string phone_number = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
 
-message RegisterUserRequest {
+
+
+
+
+// Register
+
+message RegisterRequest {
+  string first_name = 1;
+  string phone_number = 2;
+  string password = 3;
+}
+
+message RegisterResponse {
+  User user = 1;
+
+}
+
+// Login
+
+message LoginRequest {
   string email = 1;
   string password = 2;
-  string phone_number = 3;
-  string first_name = 4;
 }
-message RegisterUserResponse {
-  UserProfile profile = 1;
+
+message LoginResponse {
+  User user = 1;
+  string access_token = 2;
+  string refresh_token = 3;
 }
-message LoginUserRequest {
-  string email = 1;
-  string password = 2;
-}
-message LoginUserResponse {
-  string token = 1;
-  UserProfile profile = 2;
-  string error = 3;
-}
+
+
 message LogoutRequest {
-  string token = 1;
+  string refresh_token = 1;
 }
+
 message LogoutResponse {
   bool success = 1;
 }
+
+// GetProfile
+
 message GetProfileRequest {
-  string token = 1;
+  int64 user_id = 1;
 }
+
 message GetProfileResponse {
-  UserProfile profile = 1;
+  User user = 1;
 }
+
+
+
 message UpdateProfileRequest {
-  string token = 1;
-  optional string phone_number = 2;
-  optional string first_name = 3;
-  optional string last_name = 4;
-  optional string email = 5;
+  int64 user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string phone_number = 4;
 }
-message UpdateUserResponse {
-  string text = 1;
-  UserProfile profile = 2;
+
+message UpdateProfileResponse {
+  User user = 1;
 }
+
+
+
+
+// UpdateDeliveryAddress
+
+message UpdateDeliveryAddressRequest {
+  int64 id = 1;
+  int64 user_id = 2;
+  string street = 3;
+  string house = 4;
+  string apartment = 5;
+  string entrance = 6;
+  string floor = 7;
+  string comment = 8;
+  bool is_default = 9;
+}
+
+
+
