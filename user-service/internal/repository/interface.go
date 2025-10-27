@@ -1,7 +1,11 @@
 package repository
 
-import "user-service/internal/entity"
+import (
+	"context"
+	"user-service/internal/entity"
+)
 
 type UserRepository interface {
-	Register(ctx context.Context, user *entity.User) error
+	Create(ctx context.Context, user *entity.User) error
+	GetByUsername(ctx context.Context, username string) (*entity.User, error)
 }
