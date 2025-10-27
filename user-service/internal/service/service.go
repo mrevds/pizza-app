@@ -7,17 +7,15 @@ import (
 	"user-service/internal/repository"
 
 	"context"
+
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type RegisterInput struct {
-	Username string
-	Email    string
-	Password string
-	Name     *string
-	Age      *int32
-	Bio      *string
+	FirstName   string
+	PhoneNumber string
+	Password    string
 }
 type userService struct {
 	repo repository.UserRepository
@@ -28,9 +26,9 @@ func NewUserService(repo repository.UserRepository) UserService {
 }
 
 func (s *userService) Register(ctx context.Context, input RegisterInput) (*entity.User, error) {
-	existing, _ := s.repo.GetByUsername(ctx, input.Username)
+	existing, _ := s.repo.GetByUsername(ctx, input.PhoneNumber)
 	if existing != nil {
-		return nil, fmt.Errorf("username already taken")
+		return nil, fmt.Errorf("phone already taken")
 	}
 
 	hashed, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
@@ -39,13 +37,12 @@ func (s *userService) Register(ctx context.Context, input RegisterInput) (*entit
 	}
 
 	user := &entity.User{
-		ID: uuid.NewString(),
-
-		Email: input.Email,
-
-		Password:  string(hashed),
-		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
+		ID:          uuid.NewString(),
+		FirstName:   input.FirstName,
+		PhoneNumber: input.PhoneNumber,
+		Password:    string(hashed),
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	if err := s.repo.Create(ctx, user); err != nil {

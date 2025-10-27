@@ -22,15 +22,10 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
-	// Регистрация нового пользователя
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-	// Вход пользователя
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	// Выход (отзыв refresh token)
 	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutResponse, error)
-	// Получение профиля пользователя
 	GetProfile(ctx context.Context, in *GetProfileRequest, opts ...grpc.CallOption) (*GetProfileResponse, error)
-	// Обновление профиля пользователя
 	UpdateProfile(ctx context.Context, in *UpdateProfileRequest, opts ...grpc.CallOption) (*UpdateProfileResponse, error)
 }
 
@@ -91,15 +86,10 @@ func (c *userServiceClient) UpdateProfile(ctx context.Context, in *UpdateProfile
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility
 type UserServiceServer interface {
-	// Регистрация нового пользователя
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	// Вход пользователя
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	// Выход (отзыв refresh token)
 	Logout(context.Context, *LogoutRequest) (*LogoutResponse, error)
-	// Получение профиля пользователя
 	GetProfile(context.Context, *GetProfileRequest) (*GetProfileResponse, error)
-	// Обновление профиля пользователя
 	UpdateProfile(context.Context, *UpdateProfileRequest) (*UpdateProfileResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }

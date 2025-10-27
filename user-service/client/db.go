@@ -1,10 +1,10 @@
 package client
 
 import (
-	"user-service/internal/config"
 	"context"
 	"fmt"
 	"time"
+	"user-service/internal/config"
 
 	"github.com/jackc/pgx/v4/pgxpool"
 	"go.uber.org/fx"
@@ -23,8 +23,8 @@ func NewDB(lc fx.Lifecycle, cfg *config.Config) (*DB, error) {
 	}
 
 	// Настройка пула
-	poolConfig.MaxConns = cfg.Database.MaxConns
-	poolConfig.MinConns = cfg.Database.MinConns
+	poolConfig.MaxConns = int32(cfg.Database.MaxConns)
+	poolConfig.MinConns = int32(cfg.Database.MinConns)
 	poolConfig.MaxConnLifetime = time.Hour
 	poolConfig.MaxConnIdleTime = 30 * time.Minute
 

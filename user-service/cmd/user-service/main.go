@@ -1,15 +1,14 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"user-service/client"
 	"user-service/internal/app"
 	"user-service/internal/config"
-	"user-service/internal/handler"
 
-	"context"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -22,7 +21,6 @@ func main() {
 		fx.Provide(
 			config.Load,
 			client.NewDB,
-			handler.NewGRPCHandler,
 		),
 		app.Module,
 		fx.Invoke(registerGRPServer),
