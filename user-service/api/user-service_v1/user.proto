@@ -5,4 +5,65 @@ package user_service_v1;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = ""
+option go_package = "github.com/mrevds/pizza-app/user-service/api/user-service_v1;userservicev1";
+
+service UserV1 {
+  rpc Register(RegisterUserRequest) returns (RegisterUserResponse);
+  rpc Login(LoginUserRequest) returns (LoginUserResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse);
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateUserResponse);
+}
+
+message UserProfile {
+  string user_id = 1;
+  string email = 2;
+  string phone_number = 3;
+  string first_name = 4;
+  string last_name = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message RegisterUserRequest {
+  string email = 1;
+  string password = 2;
+  string phone_number = 3;
+  string first_name = 4;
+}
+message RegisterUserResponse {
+  UserProfile profile = 1;
+}
+message LoginUserRequest {
+  string email = 1;
+  string password = 2;
+}
+message LoginUserResponse {
+  string token = 1;
+  UserProfile profile = 2;
+  string error = 3;
+}
+message LogoutRequest {
+  string token = 1;
+}
+message LogoutResponse {
+  bool success = 1;
+}
+message GetProfileRequest {
+  string token = 1;
+}
+message GetProfileResponse {
+  UserProfile profile = 1;
+}
+message UpdateProfileRequest {
+  string token = 1;
+  optional string phone_number = 2;
+  optional string first_name = 3;
+  optional string last_name = 4;
+  optional string email = 5;
+}
+message UpdateUserResponse {
+  string text = 1;
+  UserProfile profile = 2;
+}
