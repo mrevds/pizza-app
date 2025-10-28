@@ -66,9 +66,9 @@ func Load() (*Config, error) {
 
 	v.SetDefault("database.host", "localhost")
 	v.SetDefault("database.port", "54322")
-	v.SetDefault("database.user", "auth_db_user")
-	v.SetDefault("database.password", "auth_db_password")
-	v.SetDefault("database.dbname", "auth_db")
+	v.SetDefault("database.user", "user_db_user")
+	v.SetDefault("database.password", "user_db_password")
+	v.SetDefault("database.dbname", "user_db")
 	v.SetDefault("database.sslmode", "disable")
 	v.SetDefault("database.max_conns", 25)
 	v.SetDefault("database.min_conns", 5)
