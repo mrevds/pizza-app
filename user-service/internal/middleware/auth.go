@@ -53,6 +53,11 @@ func (a *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 
 		accessToken := values[0]
 
+		// Убираем префикс "Bearer " если есть
+		if len(accessToken) > 7 && accessToken[:7] == "Bearer " {
+			accessToken = accessToken[7:]
+		}
+
 		// Валидируем access token
 		claims, err := a.jwtManager.ValidateToken(accessToken)
 		if err != nil {
@@ -70,4 +75,19 @@ func (a *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 		// Вызываем хендлер
 		return handler(ctx, req)
 	}
+}
+
+// ExtractUserID - безопасно извлекает userID из контекста
+func ExtractUserID(ctx context.Context) (string, error) {
+	userID := ctx.Value("user_id")
+	if userID == nil {
+		return "", status.Errorf(codes.Unauthenticated, "user_id not found in context")
+	}
+
+	userIDStr, ok := userID.(string)
+	if !ok {
+		return "", status.Errorf(codes.Internal, "invalid user_id type")
+	}
+
+	return userIDStr, nil
 }

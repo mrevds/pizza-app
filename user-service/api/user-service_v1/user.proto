@@ -33,7 +33,6 @@ message RegisterRequest {
 
 message RegisterResponse {
   User user = 1;
-
 }
 
 message LoginRequest {
@@ -64,10 +63,10 @@ message LogoutResponse {
   bool success = 1;
 }
 
-message GetProfileRequest {
-  int64 user_id = 1;
-}
 
+message GetProfileRequest {
+  //empty
+}
 message GetProfileResponse {
   User user = 1;
 }
@@ -83,17 +82,7 @@ message UpdateProfileResponse {
   User user = 1;
 }
 
-message UpdateDeliveryAddressRequest {
-  int64 id = 1;
-  int64 user_id = 2;
-  string street = 3;
-  string house = 4;
-  string apartment = 5;
-  string entrance = 6;
-  string floor = 7;
-  string comment = 8;
-  bool is_default = 9;
-}
+
 
 
 

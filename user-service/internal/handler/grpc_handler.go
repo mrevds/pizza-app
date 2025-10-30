@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"user-service/internal/middleware"
 	"user-service/internal/service"
 	userGRPC "user-service/pkg/user-service_v1"
 
@@ -44,7 +45,6 @@ func (h *grpcHandler) Login(ctx context.Context, req *userGRPC.LoginRequest) (*u
 	if user == nil {
 		return nil, fmt.Errorf("invalid credentials")
 	}
-
 	return &userGRPC.LoginResponse{
 		User: &userGRPC.User{
 			Id:          user.ID,
@@ -67,5 +67,29 @@ func (h *grpcHandler) RefreshTokens(ctx context.Context, req *userGRPC.RefreshTo
 	return &userGRPC.RefreshTokensResponse{
 		AccessToken:  accessToken,
 		RefreshToken: refreshToken,
+	}, nil
+}
+
+func (h *grpcHandler) GetProfile(ctx context.Context, _ *userGRPC.GetProfileRequest) (*userGRPC.GetProfileResponse, error) {
+	// Извлекаем userID из контекста (установлен middleware'ом)
+	userID, err := middleware.ExtractUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	userInfo, err := h.userService.GetProfileInfo(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	return &userGRPC.GetProfileResponse{
+		User: &userGRPC.User{
+			Id:          userInfo.ID,
+			FirstName:   userInfo.FirstName,
+			LastName:    userInfo.LastName,
+			Email:       userInfo.Email,
+			PhoneNumber: userInfo.PhoneNumber,
+			CreatedAt:   timestamppb.New(userInfo.CreatedAt),
+			UpdatedAt:   timestamppb.New(userInfo.UpdatedAt),
+		},
 	}, nil
 }

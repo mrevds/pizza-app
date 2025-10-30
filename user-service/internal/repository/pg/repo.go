@@ -2,7 +2,6 @@ package pg
 
 import (
 	"context"
-
 	"user-service/client"
 	"user-service/internal/entity"
 	"user-service/internal/repository"
@@ -68,4 +67,14 @@ func (r *userRepo) RevokeUserRefreshTokens(ctx context.Context, userID string) e
         UPDATE refresh_tokens SET revoked = true WHERE user_id = $1
     `, userID)
 	return err
+}
+
+func (r *userRepo) GetProfileInfo(ctx context.Context, userID string) (*entity.User, error) {
+	row := r.db.Pool.QueryRow(ctx, `
+	  SELECT id, first_name, phone_number, password, created_at, updated_at FROM users WHERE id = $1`, userID)
+	var u entity.User
+	if err := row.Scan(&u.ID, &u.FirstName, &u.PhoneNumber, &u.Password, &u.CreatedAt, &u.UpdatedAt); err != nil {
+		return nil, err
+	}
+	return &u, nil
 }

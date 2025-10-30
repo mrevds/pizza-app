@@ -136,3 +136,7 @@ func (s *userService) RefreshTokens(ctx context.Context, refreshToken string) (n
 
 	return newAccessToken, newRefreshToken, nil
 }
+
+func (s *userService) GetProfileInfo(ctx context.Context, userID string) (*entity.User, error) {
+	return s.repo.GetProfileInfo(ctx, userID)
+}
