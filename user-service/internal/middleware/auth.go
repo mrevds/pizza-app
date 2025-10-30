@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// AuthInterceptor - middleware для проверки access token
 type AuthInterceptor struct {
 	jwtManager *utils.JWTManager
 }
@@ -19,7 +18,6 @@ func NewAuthInterceptor(jwtManager *utils.JWTManager) *AuthInterceptor {
 	return &AuthInterceptor{jwtManager: jwtManager}
 }
 
-// Unary - перехватчик для unary gRPC методов
 func (a *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 	return func(
 		ctx context.Context,
@@ -53,12 +51,12 @@ func (a *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 
 		accessToken := values[0]
 
-		// Убираем префикс "Bearer " если есть
+		// Убираем префикс "Bearer" если есть
 		if len(accessToken) > 7 && accessToken[:7] == "Bearer " {
 			accessToken = accessToken[7:]
 		}
 
-		// Валидируем access token
+		// Validate access token
 		claims, err := a.jwtManager.ValidateToken(accessToken)
 		if err != nil {
 			return nil, status.Errorf(codes.Unauthenticated, "invalid access token: %v", err)
@@ -69,10 +67,10 @@ func (a *AuthInterceptor) Unary() grpc.UnaryServerInterceptor {
 			return nil, status.Errorf(codes.Unauthenticated, "invalid token type")
 		}
 
-		// Добавляем user_id в контекст для использования в хендлерах
+		// Добавляем user_id в контекст для использования в handlers
 		ctx = context.WithValue(ctx, "user_id", claims.UserID)
 
-		// Вызываем хендлер
+		// call the handler
 		return handler(ctx, req)
 	}
 }

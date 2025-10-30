@@ -140,3 +140,7 @@ func (s *userService) RefreshTokens(ctx context.Context, refreshToken string) (n
 func (s *userService) GetProfileInfo(ctx context.Context, userID string) (*entity.User, error) {
 	return s.repo.GetProfileInfo(ctx, userID)
 }
+
+func (s *userService) Logout(ctx context.Context, userID string) error {
+	return s.repo.RevokeUserRefreshTokens(ctx, userID)
+}

@@ -93,3 +93,15 @@ func (h *grpcHandler) GetProfile(ctx context.Context, _ *userGRPC.GetProfileRequ
 		},
 	}, nil
 }
+
+func (h *grpcHandler) Logout(ctx context.Context, _ *userGRPC.LogoutRequest) (*userGRPC.LogoutResponse, error) {
+	userId, err := middleware.ExtractUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	err = h.userService.Logout(ctx, userId)
+	if err != nil {
+		return nil, err
+	}
+	return &userGRPC.LogoutResponse{Success: true}, nil
+}
