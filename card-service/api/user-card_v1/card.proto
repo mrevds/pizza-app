@@ -1,0 +1,229 @@
+syntax = "proto3";
+
+package card_v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/mrevds/pizza-app/card-service/api/user-service_v1;user_service_v1";
+    
+
+service CardV1 {
+  // === УПРАВЛЕНИЕ КАРТАМИ ===
+  rpc AddCard(AddCardRequest) returns (AddCardResponse);           // Добавить карту
+  rpc GetCard(GetCardRequest) returns (GetCardResponse);           // Получить карту по ID
+  rpc GetUserCards(GetUserCardsRequest) returns (GetUserCardsResponse); // Все карты пользователя
+  rpc UpdateCard(UpdateCardRequest) returns (UpdateCardResponse);  // Обновить данные карты
+  rpc DeleteCard(DeleteCardRequest) returns (google.protobuf.Empty); // Удалить карту
+  rpc BlockCard(BlockCardRequest) returns (google.protobuf.Empty); // Заблокировать карту
+  rpc UnblockCard(UnblockCardRequest) returns (google.protobuf.Empty); // Разблокировать
+
+  // === ОПЕРАЦИИ С БАЛАНСОМ ===
+  rpc GetBalance(GetBalanceRequest) returns (GetBalanceResponse);  // Получить баланс
+  rpc Deposit(DepositRequest) returns (DepositResponse);           // Пополнить баланс
+  rpc Withdraw(WithdrawRequest) returns (WithdrawResponse);        // Снять средства
+  rpc Transfer(TransferRequest) returns (TransferResponse);        // Перевод между картами
+
+  // === ИСТОРИЯ ТРАНЗАКЦИЙ ===
+  rpc GetTransactions(GetTransactionsRequest) returns (GetTransactionsResponse); // История операций
+  rpc GetTransaction(GetTransactionRequest) returns (GetTransactionResponse);    // Одна транзакция
+
+  // === ДЛЯ ДРУГИХ СЕРВИСОВ (internal) ===
+  rpc ProcessPayment(ProcessPaymentRequest) returns (ProcessPaymentResponse);  // Оплата (для Order Service)
+  rpc ValidateCard(ValidateCardRequest) returns (ValidateCardResponse);        // Проверка карты
+}
+
+// === МОДЕЛИ ===
+
+message Card {
+  int64 id = 1;
+  int64 user_id = 2;
+  string card_number_masked = 3;  // "4532 **** **** 9010" (маскированный!)
+  string card_holder_name = 4;
+  string expiry_date = 5;
+  string card_type = 6;
+  double balance = 7;
+  string currency = 8;
+  bool is_active = 9;
+  bool is_blocked = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+message Transaction {
+  int64 id = 1;
+  int64 card_id = 2;
+  string transaction_type = 3;
+  double amount = 4;
+  double balance_before = 5;
+  double balance_after = 6;
+  string description = 7;
+  string status = 8;
+  google.protobuf.Timestamp created_at = 9;
+}
+
+// === ЗАПРОСЫ И ОТВЕТЫ ===
+
+// Добавить карту
+message AddCardRequest {
+  int64 user_id = 1;
+  string card_number = 2;      // Полный номер (только при добавлении)
+  string card_holder_name = 3;
+  string expiry_date = 4;
+  string cvv = 5;              // CVV (только при добавлении, хешируем)
+}
+
+message AddCardResponse {
+  Card card = 1;
+}
+
+// Получить карту
+message GetCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;  // Проверка что карта принадлежит пользователю
+}
+
+message GetCardResponse {
+  Card card = 1;
+}
+
+// Все карты пользователя
+message GetUserCardsRequest {
+  int64 user_id = 1;
+}
+
+message GetUserCardsResponse {
+  repeated Card cards = 1;
+}
+
+// Обновить карту
+message UpdateCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  string card_holder_name = 3;
+  string expiry_date = 4;
+}
+
+message UpdateCardResponse {
+  Card card = 1;
+}
+
+// Удалить карту
+message DeleteCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+}
+
+// Блокировка
+message BlockCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  string reason = 3;  // Причина блокировки
+}
+
+message UnblockCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+}
+
+// Баланс
+message GetBalanceRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+}
+
+message GetBalanceResponse {
+  double balance = 1;
+  string currency = 2;
+}
+
+// Пополнение
+message DepositRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  double amount = 3;
+  string description = 4;
+}
+
+message DepositResponse {
+  Transaction transaction = 1;
+  double new_balance = 2;
+}
+
+// Снятие
+message WithdrawRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  double amount = 3;
+  string description = 4;
+}
+
+message WithdrawResponse {
+  Transaction transaction = 1;
+  double new_balance = 2;
+}
+
+// Перевод
+message TransferRequest {
+  int64 from_card_id = 1;
+  int64 to_card_id = 2;
+  int64 user_id = 3;  // Кто делает перевод
+  double amount = 4;
+  string description = 5;
+}
+
+message TransferResponse {
+  Transaction from_transaction = 1;
+  Transaction to_transaction = 2;
+  double new_balance_from = 3;
+  double new_balance_to = 4;
+}
+
+// История транзакций
+message GetTransactionsRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  int32 limit = 3;   // Количество записей
+  int32 offset = 4;  // Пагинация
+}
+
+message GetTransactionsResponse {
+  repeated Transaction transactions = 1;
+  int32 total = 2;
+}
+
+message GetTransactionRequest {
+  int64 transaction_id = 1;
+  int64 user_id = 2;
+}
+
+message GetTransactionResponse {
+  Transaction transaction = 1;
+}
+
+// Оплата (для других сервисов)
+message ProcessPaymentRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  double amount = 3;
+  string order_id = 4;
+  string description = 5;
+}
+
+message ProcessPaymentResponse {
+  bool success = 1;
+  string message = 2;
+  Transaction transaction = 3;
+}
+
+// Валидация карты
+message ValidateCardRequest {
+  int64 card_id = 1;
+  int64 user_id = 2;
+  double amount = 3;  // Проверить что баланс достаточен
+}
+
+message ValidateCardResponse {
+  bool is_valid = 1;
+  string message = 2;
+}

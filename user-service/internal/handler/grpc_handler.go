@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 	"fmt"
+	"user-service/internal/entity"
 	"user-service/internal/middleware"
 	"user-service/internal/service"
 	userGRPC "user-service/pkg/user-service_v1"
@@ -104,4 +105,34 @@ func (h *grpcHandler) Logout(ctx context.Context, _ *userGRPC.LogoutRequest) (*u
 		return nil, err
 	}
 	return &userGRPC.LogoutResponse{Success: true}, nil
+}
+
+func (h *grpcHandler) UpdateProfile(ctx context.Context, req *userGRPC.UpdateProfileRequest) (*userGRPC.UpdateProfileResponse, error) {
+	userID, err := middleware.ExtractUserID(ctx)
+	if err != nil {
+		return nil, err
+	}
+	updateUser, err := h.userService.UpdateUserProfile(ctx, &entity.User{
+		ID:          userID,
+		FirstName:   req.GetFirstName(),
+		LastName:    req.GetLastName(),
+		Email:       req.GetEmail(),
+		PhoneNumber: req.GetPhoneNumber(),
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &userGRPC.UpdateProfileResponse{
+		User: &userGRPC.User{
+			Id:          updateUser.ID,
+			FirstName:   updateUser.FirstName,
+			LastName:    updateUser.LastName,
+			Email:       updateUser.Email,
+			PhoneNumber: updateUser.PhoneNumber,
+			CreatedAt:   timestamppb.New(updateUser.CreatedAt),
+			UpdatedAt:   timestamppb.New(updateUser.UpdatedAt),
+		},
+	}, nil
+
 }

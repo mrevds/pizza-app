@@ -1,0 +1,11 @@
+.DS_Store
+.env.local
+.env.*.local
+*.log
+*.out
+bin/
+dist/
+vendor/
+.idea/
+*.iml
+

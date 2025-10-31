@@ -13,4 +13,5 @@ type UserRepository interface {
 	RevokeRefreshToken(ctx context.Context, token string) error
 	RevokeUserRefreshTokens(ctx context.Context, userID string) error
 	GetProfileInfo(ctx context.Context, userID string) (*entity.User, error)
+	UpdateProfile(ctx context.Context, user *entity.User) error
 }

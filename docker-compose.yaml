@@ -1,0 +1,116 @@
+version: '3.9'
+
+volumes:
+  user_db_volume:
+  card_db_volume:
+
+services:
+  # User Service PostgreSQL (порт 54322)
+  user-db:
+    image: postgres:14-alpine3.19
+    container_name: user-db
+    environment:
+      - "POSTGRES_DB=user_db"
+      - "POSTGRES_USER=user_db_user"
+      - "POSTGRES_PASSWORD=user_db_password"
+    ports:
+      - "54322:5432"
+    volumes:
+      - user_db_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_db_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pizza-network
+
+  # Card Service PostgreSQL (порт 5433)
+  card-db:
+    image: postgres:14-alpine3.19
+    container_name: card-db
+    environment:
+      - "POSTGRES_DB=card_db"
+      - "POSTGRES_USER=card_db_user"
+      - "POSTGRES_PASSWORD=card_db_password"
+    ports:
+      - "5433:5432"
+    volumes:
+      - card_db_volume:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U card_db_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pizza-network
+
+  # User Service (gRPC на 50051)
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service
+    ports:
+      - "50051:50051"
+    environment:
+      - "DB_HOST=user-db"
+      - "DB_PORT=5432"
+      - "DB_NAME=user_db"
+      - "DB_USER=user_db_user"
+      - "DB_PASSWORD=user_db_password"
+    depends_on:
+      user-db:
+        condition: service_healthy
+    networks:
+      - pizza-network
+    restart: unless-stopped
+
+  # Card Service (gRPC на 50052)
+  card-service:
+    build:
+      context: ./card-service
+      dockerfile: Dockerfile
+    container_name: card-service
+    ports:
+      - "50052:50052"
+    environment:
+      - "DB_HOST=card-db"
+      - "DB_PORT=5432"
+      - "DB_NAME=card_db"
+      - "DB_USER=card_db_user"
+      - "DB_PASSWORD=card_db_password"
+    depends_on:
+      card-db:
+        condition: service_healthy
+    networks:
+      - pizza-network
+    restart: unless-stopped
+
+  # API Gateway (HTTP на 8080)
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - "APP_PORT=8080"
+      - "APP_ENV=production"
+      - "USER_SERVICE_HOST=user-service"
+      - "USER_SERVICE_PORT=50051"
+      - "CARD_SERVICE_HOST=card-service"
+      - "CARD_SERVICE_PORT=50052"
+      - "LOG_LEVEL=info"
+    depends_on:
+      - user-service
+      - card-service
+    networks:
+      - pizza-network
+    restart: unless-stopped
+
+networks:
+  pizza-network:
+    driver: bridge
+

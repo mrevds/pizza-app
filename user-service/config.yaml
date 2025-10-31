@@ -3,7 +3,7 @@ server:
   host: "0.0.0.0"
 
 database:
-  host: "pg"
+  host: "user-db"
   port: "5432"
   user: "user_db_user"
   password: "user_db_password"

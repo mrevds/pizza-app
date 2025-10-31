@@ -144,3 +144,27 @@ func (s *userService) GetProfileInfo(ctx context.Context, userID string) (*entit
 func (s *userService) Logout(ctx context.Context, userID string) error {
 	return s.repo.RevokeUserRefreshTokens(ctx, userID)
 }
+
+func (s *userService) UpdateUserProfile(ctx context.Context, input *entity.User) (*entity.User, error) {
+	exist, err := s.repo.GetProfileInfo(ctx, input.ID)
+	if err != nil {
+		return nil, err
+	}
+	if input.FirstName != "" {
+		exist.FirstName = input.FirstName
+	}
+	if input.LastName != "" {
+		exist.LastName = input.LastName
+	}
+	if input.Email != "" {
+		exist.Email = input.Email
+	}
+	if input.PhoneNumber != "" {
+		exist.PhoneNumber = input.PhoneNumber
+	}
+	exist.UpdatedAt = time.Now()
+	if err := s.repo.UpdateProfile(ctx, exist); err != nil {
+		return nil, err
+	}
+	return exist, nil
+}

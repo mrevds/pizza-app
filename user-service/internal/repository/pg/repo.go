@@ -2,6 +2,7 @@ package pg
 
 import (
 	"context"
+	"fmt"
 	"user-service/client"
 	"user-service/internal/entity"
 	"user-service/internal/repository"
@@ -77,4 +78,37 @@ func (r *userRepo) GetProfileInfo(ctx context.Context, userID string) (*entity.U
 		return nil, err
 	}
 	return &u, nil
+}
+
+func (r *userRepo) UpdateProfile(ctx context.Context, user *entity.User) error {
+	query := "UPDATE users SET updated_at = $1"
+	args := []interface{}{user.UpdatedAt}
+	argNum := 2
+
+	if user.FirstName != "" {
+		query += fmt.Sprintf(", first_name = $%d", argNum)
+		args = append(args, user.FirstName)
+		argNum++
+	}
+	if user.LastName != "" {
+		query += fmt.Sprintf(", last_name = $%d", argNum)
+		args = append(args, user.LastName)
+		argNum++
+	}
+	if user.Email != "" {
+		query += fmt.Sprintf(", email = $%d", argNum)
+		args = append(args, user.Email)
+		argNum++
+	}
+	if user.PhoneNumber != "" {
+		query += fmt.Sprintf(", phone_number = $%d", argNum)
+		args = append(args, user.PhoneNumber)
+		argNum++
+	}
+
+	query += fmt.Sprintf(" WHERE id = $%d", argNum)
+	args = append(args, user.ID)
+
+	_, err := r.db.Pool.Exec(ctx, query, args...)
+	return err
 }

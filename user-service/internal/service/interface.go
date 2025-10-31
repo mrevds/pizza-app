@@ -11,4 +11,5 @@ type UserService interface {
 	RefreshTokens(ctx context.Context, refreshToken string) (newAccessToken, newRefreshToken string, err error)
 	GetProfileInfo(ctx context.Context, userID string) (*entity.User, error)
 	Logout(ctx context.Context, userID string) error
+	UpdateUserProfile(ctx context.Context, input *entity.User) (*entity.User, error)
 }
