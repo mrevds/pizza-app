@@ -1,6 +1,6 @@
 module github.com/mrevds/pizza-app/card-service
 
-go 1.25.3
+go 1.23.0
 
 require (
 	github.com/jackc/pgx/v4 v4.18.3
