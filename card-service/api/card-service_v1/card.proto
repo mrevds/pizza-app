@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package card_service.v1;
+
+import "google/type/date.proto";
+import "google/type/money.proto";
+
+option go_package = "github.com/mrevds/pizza-app/card-service/api/card-service_v1;card_service_v1";
+
+service CardService {
+    rpc AddCard(AddCardRequest) returns (AddCardResponse);
+}
+
+
+message Card {
+    string id = 1;
+    string card_number = 2;
+    google.type.Date date_expire = 3;
+    google.type.Money balance = 4;
+    string owner = 5;
+    optional bool isActive = 6;
+}
+
+message AddCardRequest {
+    Card cardData = 1;
+    string cvv = 2;
+}
+
+message AddCardResponse {
+    string card_id = 1;
+    string message = 2;
+    bool success = 3;
+}

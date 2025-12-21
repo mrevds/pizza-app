@@ -81,8 +81,3 @@ message UpdateProfileRequest {
 message UpdateProfileResponse {
   User user = 1;
 }
-
-
-
-
-

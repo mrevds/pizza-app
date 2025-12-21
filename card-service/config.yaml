@@ -1,0 +1,13 @@
+server:
+  grpc_port: "50052"
+  host: "0.0.0.0"
+
+database:
+  host: "localhost"
+  port: 5433
+  user: "card_db_user"
+  password: "card_db_password"
+  dbname: "card_db"
+  sslmode: "disable"
+  max_conns: 25
+  min_conns: 5
