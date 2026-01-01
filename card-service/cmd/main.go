@@ -1,6 +1,7 @@
 package main
 
 import (
+	"card-service/app"
 	"card-service/database"
 	"card-service/internal/config"
 	pbCard "card-service/pkg/card_v1/card-service_v1"
@@ -20,7 +21,7 @@ func main() {
 			config.CardConfigLoad,
 			database.CardDbInit,
 		),
-		//app.Module, надо написать эту дрочь DI
+		app.Cardmodule,
 		fx.Invoke(registergRPCServer),
 	).Run()
 }
@@ -44,6 +45,12 @@ func registergRPCServer(
 						log.Fatalf("failed to serve: %v", err)
 					}
 				}()
+				return nil
+			},
+			OnStop: func(ctx context.Context) error  {
+				log.Printf("stoping gRPC server")
+				grpcServer.GracefulStop()
+				log.Printf("gRPC server stopped")
 				return nil
 			},
 		})

@@ -8,10 +8,11 @@ import (
 )
 
 type Config struct {
-	Server      ServerConfig
-	Database    DatabaseConfig
-	JWT         JWTConfig
-	RateLimiter RateLimiterConfig
+	Server        ServerConfig
+	Database      DatabaseConfig
+	JWT           JWTConfig
+	RateLimiter   RateLimiterConfig
+	KafkaProducer KafkaConfig
 }
 type ServerConfig struct {
 	GRPCPort string
@@ -35,6 +36,9 @@ type JWTConfig struct {
 }
 type RateLimiterConfig struct {
 	RequestsPerSecond int
+}
+type KafkaConfig struct {
+	Brokers []string
 }
 
 func Load() (*Config, error) {
@@ -66,7 +70,7 @@ func Load() (*Config, error) {
 
 	v.SetDefault("database.host", "localhost")
 	v.SetDefault("database.port", "54322")
-	v.SetDefault("database.user", "user_db_user")
+	v.SetDefault("database.user", "mrevds")
 	v.SetDefault("database.password", "user_db_password")
 	v.SetDefault("database.dbname", "user_db")
 	v.SetDefault("database.sslmode", "disable")
@@ -78,6 +82,9 @@ func Load() (*Config, error) {
 	v.SetDefault("jwt.refresh_token_duration", "168h") // 7 дней
 
 	v.SetDefault("rate_limit.requests_per_second", 100)
+
+	v.SetDefault("kafka.brokers", "localhost:9092")
+
 	if err := v.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 			return nil, fmt.Errorf("Error reading config file:", err)
@@ -114,6 +121,9 @@ func Load() (*Config, error) {
 		},
 		RateLimiter: RateLimiterConfig{
 			RequestsPerSecond: v.GetInt("rate_limit.requests_per_second"),
+		},
+		KafkaProducer: KafkaConfig{
+			Brokers: v.GetStringSlice("kafka.brokers"),
 		},
 	}
 	return cfg, nil

@@ -1,3 +1,7 @@
+networks:
+  pizza-kafka-network:
+    external: true
+
 volumes:
   postgres_volume:
 
@@ -13,7 +17,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -40,11 +44,14 @@ services:
     ports:
       - "${APP_PORT}:50051"
     environment:
-      - "DB_HOST=pg"
-      - "DB_PORT=5432"
-      - "DB_NAME=${PG_DATABASE_NAME}"
-      - "DB_USER=${PG_USER}"
-      - "DB_PASSWORD=${PG_PASSWORD}"
+      - "PG_HOST=pg"
+      - "PG_PORT=5432"
+      - "PG_DATABASE_NAME=${PG_DATABASE_NAME}"
+      - "PG_USER=${PG_USER}"
+      - "PG_PASSWORD=${PG_PASSWORD}"
     depends_on:
       - migrator
+    networks:
+      - default
+      - pizza-kafka-network
 

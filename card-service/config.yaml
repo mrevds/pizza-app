@@ -2,12 +2,15 @@ server:
   grpc_port: "50052"
   host: "0.0.0.0"
 
+jwt:
+  secret: "superpupersecretkey"
+
 database:
   host: "localhost"
   port: 5433
-  user: "card_db_user"
-  password: "card_db_password"
-  dbname: "card_db"
+  user: "mrevds"
+  password: "12121212"
+  dbname: "pizza-card"
   sslmode: "disable"
   max_conns: 25
   min_conns: 5

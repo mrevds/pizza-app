@@ -13,7 +13,7 @@ services:
     volumes:
       - postgres_volume:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${PG_USER}"]
+      test: ["CMD-SHELL", "pg_isready -U ${PG_USER} -d ${PG_DATABASE_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,7 +38,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "${APP_PORT}:50051"
+      - "${APP_PORT}:50052"
     environment:
       - "DB_HOST=pg"
       - "DB_PORT=5432"

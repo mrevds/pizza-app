@@ -2,8 +2,10 @@ package service
 
 import (
 	"fmt"
+	"log"
 	"time"
 	"user-service/internal/entity"
+	"user-service/internal/kafka"
 	"user-service/internal/repository"
 	"user-service/internal/utils"
 
@@ -20,12 +22,14 @@ type RegisterInput struct {
 type userService struct {
 	repo       repository.UserRepository
 	jwtManager *utils.JWTManager
+	producer   kafka.Producer
 }
 
-func NewUserService(repo repository.UserRepository, jwtManager *utils.JWTManager) UserService {
+func NewUserService(repo repository.UserRepository, jwtManager *utils.JWTManager, producer kafka.Producer) UserService {
 	return &userService{
 		repo:       repo,
 		jwtManager: jwtManager,
+		producer:   producer,
 	}
 }
 
@@ -49,6 +53,16 @@ func (s *userService) Register(ctx context.Context, input RegisterInput) (*entit
 	if err := s.repo.Create(ctx, user); err != nil {
 		return nil, err
 	}
+	event := kafka.UserRegisteredEvent{
+		UserID:      user.ID,
+		PhoneNumber: user.PhoneNumber,
+		FirstName:   user.FirstName,
+		Timestamp:   time.Now(),
+	}
+	if err := s.producer.Publish(ctx, "user-registered", user.ID, event); err != nil {
+		log.Printf("Failed to publish user-registered event: %v", err)
+	}
+
 	return user, nil
 }
 func (s *userService) Login(ctx context.Context, phoneNumber, password string) (user *entity.User, accessToken, refreshToken string) {
@@ -82,6 +96,13 @@ func (s *userService) Login(ctx context.Context, phoneNumber, password string) (
 	}
 	if err := s.repo.SaveRefreshToken(ctx, refreshTokenEntity); err != nil {
 		return nil, "", ""
+	}
+	eventLogin := kafka.UserLoggedInEvent{
+		UserID:    existing.ID,
+		Timestamp: time.Now(),
+	}
+	if err := s.producer.Publish(ctx, "user-login", existing.ID, eventLogin); err != nil {
+		log.Printf("Failed to publish user-login event: %v", err)
 	}
 
 	return existing, acToken, rfToken

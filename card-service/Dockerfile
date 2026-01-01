@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.23-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /build
 
@@ -16,7 +16,7 @@ RUN go mod download
 COPY . .
 
 # Build the application
-RUN CGO_ENABLED=0 GOOS=linux go build -o /build/app ./cmd/user-service
+RUN CGO_ENABLED=0 GOOS=linux go build -o /build/app ./cmd/main.go
 
 # Runtime stage
 FROM alpine:3.19
@@ -33,8 +33,8 @@ COPY --from=builder /build/app .
 COPY config.yaml .
 
 # Expose gRPC port
-EXPOSE 50051
+EXPOSE 50052
 
 # Run the application
-CMD ["./app"]
+CMD ["./main"]
 

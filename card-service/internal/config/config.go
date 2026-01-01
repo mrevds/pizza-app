@@ -9,6 +9,11 @@ import (
 type Config struct {
 	Server   CardServerConfig
 	Database CardDataBaseConfig
+	JWT      JWTConfig
+}
+
+type JWTConfig struct {
+	Secret string
 }
 
 type CardServerConfig struct {
@@ -38,6 +43,12 @@ func CardConfigLoad() (*Config, error) {
 	v.AutomaticEnv()
 	v.BindEnv("server.grpc_port", "GRPC_PORT")
 	v.BindEnv("server.host", "SERVER_HOST")
+	v.BindEnv("database.host", "DB_HOST")
+	v.BindEnv("database.port", "DB_PORT")
+	v.BindEnv("database.user", "DB_USER")
+	v.BindEnv("database.password", "DB_PASSWORD")
+	v.BindEnv("database.dbname", "DB_NAME")
+	v.BindEnv("jwt.secret", "JWT_SECRET")
 
 	v.SetDefault("database.host", "localhost")
 	v.SetDefault("database.port", "5433")
@@ -68,17 +79,20 @@ func CardConfigLoad() (*Config, error) {
 			MaxConns: v.GetInt("database.max_conns"),
 			MinConns: v.GetInt("database.min_conns"),
 		},
+		JWT: JWTConfig{
+			Secret: v.GetString("jwt.secret"),
+		},
 	}
 	return cfg, nil
 }
 
 func (c *Config) GetDSN() string {
 	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-	c.Database.Host,
-	c.Database.Port,
-	c.Database.User,
-	c.Database.Password,
-	c.Database.DBName,
-	c.Database.SSLMode,
+		c.Database.Host,
+		c.Database.Port,
+		c.Database.User,
+		c.Database.Password,
+		c.Database.DBName,
+		c.Database.SSLMode,
 	)
 }
