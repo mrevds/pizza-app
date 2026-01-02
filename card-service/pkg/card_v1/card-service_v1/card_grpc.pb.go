@@ -23,6 +23,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CardServiceClient interface {
 	AddCard(ctx context.Context, in *AddCardRequest, opts ...grpc.CallOption) (*AddCardResponse, error)
+	BlockCard(ctx context.Context, in *BlockCardRequest, opts ...grpc.CallOption) (*BlockCardResponse, error)
+	UnBlockCard(ctx context.Context, in *BlockCardRequest, opts ...grpc.CallOption) (*BlockCardResponse, error)
+	TransferMoney(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*TransferResponse, error)
 }
 
 type cardServiceClient struct {
@@ -42,11 +45,41 @@ func (c *cardServiceClient) AddCard(ctx context.Context, in *AddCardRequest, opt
 	return out, nil
 }
 
+func (c *cardServiceClient) BlockCard(ctx context.Context, in *BlockCardRequest, opts ...grpc.CallOption) (*BlockCardResponse, error) {
+	out := new(BlockCardResponse)
+	err := c.cc.Invoke(ctx, "/card_service.v1.CardService/BlockCard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cardServiceClient) UnBlockCard(ctx context.Context, in *BlockCardRequest, opts ...grpc.CallOption) (*BlockCardResponse, error) {
+	out := new(BlockCardResponse)
+	err := c.cc.Invoke(ctx, "/card_service.v1.CardService/UnBlockCard", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cardServiceClient) TransferMoney(ctx context.Context, in *TransferRequest, opts ...grpc.CallOption) (*TransferResponse, error) {
+	out := new(TransferResponse)
+	err := c.cc.Invoke(ctx, "/card_service.v1.CardService/TransferMoney", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CardServiceServer is the server API for CardService service.
 // All implementations must embed UnimplementedCardServiceServer
 // for forward compatibility
 type CardServiceServer interface {
 	AddCard(context.Context, *AddCardRequest) (*AddCardResponse, error)
+	BlockCard(context.Context, *BlockCardRequest) (*BlockCardResponse, error)
+	UnBlockCard(context.Context, *BlockCardRequest) (*BlockCardResponse, error)
+	TransferMoney(context.Context, *TransferRequest) (*TransferResponse, error)
 	mustEmbedUnimplementedCardServiceServer()
 }
 
@@ -56,6 +89,15 @@ type UnimplementedCardServiceServer struct {
 
 func (UnimplementedCardServiceServer) AddCard(context.Context, *AddCardRequest) (*AddCardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddCard not implemented")
+}
+func (UnimplementedCardServiceServer) BlockCard(context.Context, *BlockCardRequest) (*BlockCardResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BlockCard not implemented")
+}
+func (UnimplementedCardServiceServer) UnBlockCard(context.Context, *BlockCardRequest) (*BlockCardResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnBlockCard not implemented")
+}
+func (UnimplementedCardServiceServer) TransferMoney(context.Context, *TransferRequest) (*TransferResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TransferMoney not implemented")
 }
 func (UnimplementedCardServiceServer) mustEmbedUnimplementedCardServiceServer() {}
 
@@ -88,6 +130,60 @@ func _CardService_AddCard_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CardService_BlockCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CardServiceServer).BlockCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/card_service.v1.CardService/BlockCard",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CardServiceServer).BlockCard(ctx, req.(*BlockCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CardService_UnBlockCard_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BlockCardRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CardServiceServer).UnBlockCard(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/card_service.v1.CardService/UnBlockCard",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CardServiceServer).UnBlockCard(ctx, req.(*BlockCardRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CardService_TransferMoney_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TransferRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CardServiceServer).TransferMoney(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/card_service.v1.CardService/TransferMoney",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CardServiceServer).TransferMoney(ctx, req.(*TransferRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CardService_ServiceDesc is the grpc.ServiceDesc for CardService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -98,6 +194,18 @@ var CardService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddCard",
 			Handler:    _CardService_AddCard_Handler,
+		},
+		{
+			MethodName: "BlockCard",
+			Handler:    _CardService_BlockCard_Handler,
+		},
+		{
+			MethodName: "UnBlockCard",
+			Handler:    _CardService_UnBlockCard_Handler,
+		},
+		{
+			MethodName: "TransferMoney",
+			Handler:    _CardService_TransferMoney_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

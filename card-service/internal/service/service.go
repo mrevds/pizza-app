@@ -53,3 +53,63 @@ func (s *cardService) AddCard(ctx context.Context, input AddCardData) (*entity.C
 	}
 	return card, nil
 }
+
+func (s *cardService) BlockCard(ctx context.Context, cardNumber string, userID string) error {
+	if len(cardNumber) != 16 {
+		return fmt.Errorf("len not equal 16")
+	}
+	owner, err := s.cardRepo.GetCardInfo(ctx, cardNumber)
+	if err != nil {
+		return err
+	}
+	if owner.OwnerID != userID {
+		return fmt.Errorf("ne owner blyad")
+	}
+	err = s.cardRepo.BlockCard(ctx, cardNumber)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *cardService) UnBlockCard(ctx context.Context, cardNumber string, userID string) error {
+	if len(cardNumber) != 16 {
+		return fmt.Errorf("len not equal 16")
+	}
+	owner, err := s.cardRepo.GetCardInfo(ctx, cardNumber)
+	if err != nil {
+		return err
+	}
+	if owner.OwnerID != userID {
+		return fmt.Errorf("ne owner blyad")
+	}
+	err = s.cardRepo.UnBlockCard(ctx, cardNumber)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (s *cardService) MoneyTransfer(ctx context.Context, userFrom string, userTo string, amount int64, userID string) error {
+	if len(userFrom) != 16 || len(userTo) != 16 {
+		return fmt.Errorf("len not enough")
+	}
+	cardOwner, _ := s.cardRepo.GetCardInfo(ctx, userFrom)
+	if cardOwner.OwnerID != userID {
+		return fmt.Errorf("cardowner is wrong:%s", cardOwner.OwnerID)
+	}
+	exist := s.cardRepo.GetCardByNumber(ctx, userTo)
+	if !exist {
+		return fmt.Errorf("cant find card: %t", exist)
+	}
+
+	err := s.cardRepo.WithdrawalMoney(ctx, userFrom, amount)
+	if err != nil {
+		return fmt.Errorf("withdraw err: %w", err)
+	}
+	err = s.cardRepo.Accrual(ctx, userTo, amount)
+	if err != nil {
+		return fmt.Errorf("accrual err: %w", err)
+	}
+	return nil
+}
