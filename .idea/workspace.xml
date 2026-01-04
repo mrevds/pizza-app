@@ -5,23 +5,42 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="76edc1ae-12a4-42ab-907f-7a765b0f276b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/catalog-service/api/catalog-service_v1/catalog.proto" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/Taskfile.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/cmd/main.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/config.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/app/module.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/config/config.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/database/db.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/handler/gRPCHandler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/handler/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/kafka/producer.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/middleware/interceptor.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/repo/catalogRepo.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/repo/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/service/catalogServ.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/internal/service/interface.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/migration.Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/migration.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/catalog-service/migrations/01_catalog.sql" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/Taskfile.yml" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/Taskfile.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/api/card-service_v1/card.proto" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/api/card-service_v1/card.proto" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/entity/card.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/entity/card.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/internal/handler/grpc_handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/internal/handler/grpc_handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/internal/repo/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/internal/repo/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/internal/repo/pg/repo.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/internal/repo/pg/repo.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/internal/service/interface.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/internal/service/interface.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/internal/service/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/internal/service/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/pkg/card_v1/card-service_v1/card.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/pkg/card_v1/card-service_v1/card.pb.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/card-service/pkg/card_v1/card-service_v1/card_grpc.pb.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/pkg/card_v1/card-service_v1/card_grpc.pb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/card-service/app/module.go" beforeDir="false" afterPath="$PROJECT_DIR$/card-service/app/module.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/catalog-service/api/catalog-service_v1/catalog.proto" beforeDir="false" afterPath="$PROJECT_DIR$/catalog-service/api/catalog-service_v1/catalog.proto" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dockerfile" />
+        <option value="Go File" />
+      </list>
+    </option>
   </component>
   <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../Program Files/Go" />
   <component name="Git.Settings">
@@ -35,30 +54,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.GoLinterPluginOnboarding&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.GoLinterPluginStorageMigration&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;dev&quot;,
-    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
-    &quot;go.sdk.automatically.set&quot;: &quot;true&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Denis/GolandProjects/pizza-app&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultGoTemplateProperty": "Go File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.GoLinterPluginOnboarding": "true",
+    "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
+    "RunOnceActivity.GoLinterPluginStorageMigration": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.go.formatter.settings.were.checked": "true",
+    "RunOnceActivity.go.migrated.go.modules.settings": "true",
+    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "dev",
+    "go.import.settings.migrated": "true",
+    "go.sdk.automatically.set": "true",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "last_opened_file_path": "C:/Users/Denis/GolandProjects/pizza-app/catalog-service/internal/middleware",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true"
   }
-}</component>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Denis\GolandProjects\pizza-app\catalog-service\internal\middleware" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -82,5 +110,13 @@
   </component>
   <component name="VgoProject">
     <settings-migrated>true</settings-migrated>
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

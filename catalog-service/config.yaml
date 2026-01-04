@@ -1,0 +1,20 @@
+server:
+  grpc_port: "50053"
+  host: "0.0.0.0"
+
+jwt:
+  secret: "superpupersecretkey"
+
+database:
+  host: "localhost"
+  port: 5434
+  user: "mrevds"
+  password: "12121212"
+  dbname: "pizza-catalog"
+  sslmode: "disable"
+  max_conns: 25
+  min_conns: 5
+
+kafka:
+  brokers:
+    - "kafka:29092"

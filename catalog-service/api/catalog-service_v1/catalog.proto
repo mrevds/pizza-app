@@ -1,0 +1,75 @@
+syntax = "proto3";
+package catalog_service.v1;
+
+option go_package = "github.com/mrevds/pizza-app/catalog-service/api/catalog-service_v1;catalog_service_v1";
+
+service CatalogService {
+  rpc GetMenu(GetMenuRequest) returns (GetMenuResponse);
+  rpc GetItemById(GetItemByIdRequest) returns (MenuItem);
+  rpc GetItemsByCategory(GetItemsByCategoryRequest) returns (GetMenuResponse);
+}
+
+// Категории товаров
+enum Category {
+  CATEGORY_UNSPECIFIED = 0;
+  CATEGORY_PIZZA = 1;
+  CATEGORY_DRINKS = 2;
+  CATEGORY_SNACKS = 3;
+  CATEGORY_DESSERTS = 4;
+  CATEGORY_SAUCES = 5;
+}
+// Размеры пиццы
+enum PizzaSize {
+  SIZE_UNSPECIFIED = 0;
+  SIZE_SMALL = 1;      // 25 см
+  SIZE_MEDIUM = 2;     // 30 см
+  SIZE_LARGE = 3;      // 35 см
+}
+
+message MenuItem {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int64 price = 4;              // цена в копейках
+  Category category = 5;
+  string image_url = 6;
+  int32 weight = 7;             // вес в граммах
+  bool is_available = 8;
+  repeated string ingredients = 9;  // список ингредиентов
+}
+
+// Вариант пиццы с размером и ценой
+message PizzaVariant {
+  PizzaSize size = 1;
+  int64 price = 2;
+  int32 weight = 3;
+  int32 diameter = 4;           // диаметр в см
+}
+
+message PizzaItem {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  Category category = 4;
+  string image_url = 5;
+  bool is_available = 6;
+  repeated string ingredients = 7;
+  repeated PizzaVariant variants = 8;  // разные размеры с ценами
+}
+
+message GetMenuRequest {
+  // пустой запрос — возвращаем всё меню
+}
+
+message GetMenuResponse {
+  repeated MenuItem items = 1;
+  repeated PizzaItem pizzas = 2;
+}
+
+message GetItemByIdRequest {
+  string id = 1;
+}
+
+message GetItemsByCategoryRequest {
+  Category category = 1;
+}
