@@ -5,7 +5,7 @@ server:
 database:
   host: "user-db"
   port: "5432"
-  user: "user_db_user"
+  user: "mrevds"
   password: "user_db_password"
   dbname: "user_db"
   sslmode: "disable"
@@ -20,3 +20,6 @@ jwt:
 rate_limit:
   requests_per_second: 100
 
+kafka:
+  brokers:
+    - "kafka:29092"

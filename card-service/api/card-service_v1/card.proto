@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package card_service.v1;
+
+import "google/type/date.proto";
+
+
+option go_package = "github.com/mrevds/pizza-app/card-service/api/card-service_v1;card_service_v1";
+
+service CardService {
+    rpc AddCard(AddCardRequest) returns (AddCardResponse);
+    rpc BlockCard(BlockCardRequest) returns (BlockCardResponse);
+    rpc UnBlockCard(BlockCardRequest) returns (BlockCardResponse);
+    rpc TransferMoney(TransferRequest) returns (TransferResponse);
+}
+
+
+message Card {
+    string card_number = 1;
+    google.type.Date date_expire = 2;
+    optional bool isActive = 3;
+}
+
+message AddCardRequest {
+    Card cardData = 1;
+    string cvv = 2;
+}
+
+message AddCardResponse {
+    string card_id = 1;
+    string message = 2;
+    bool success = 3;
+}
+
+message BlockCardRequest {
+  string cardNumber = 1;
+}
+message BlockCardResponse {
+  string message = 1;
+  bool success = 2;
+}
+
+message TransferRequest {
+  string from_card_number = 1;
+  string to_card_number = 2;
+  int64 amount = 3; // сумма в копейках/центах (100.50 руб = 10050)
+}
+
+message TransferResponse {
+  string message = 1;
+  bool success = 2;
+}

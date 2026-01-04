@@ -2,6 +2,7 @@ package app
 
 import (
 	"user-service/internal/handler"
+	"user-service/internal/kafka"
 	"user-service/internal/middleware"
 	"user-service/internal/repository/pg"
 	"user-service/internal/service"
@@ -19,6 +20,7 @@ func newGRPCServer(authInterceptor *middleware.AuthInterceptor) *grpc.Server {
 
 var Module = fx.Module("app",
 	fx.Provide(pg.NewUserRepo),
+	fx.Provide(kafka.NewProducer),
 	fx.Provide(service.NewUserService),
 	fx.Provide(handler.NewGRPCHandler),
 	fx.Provide(newGRPCServer),
